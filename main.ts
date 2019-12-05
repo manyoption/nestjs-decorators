@@ -1,0 +1,91 @@
+import { createParamDecorator } from "@nestjs/common";
+import { Request } from "express";
+
+// Decorator to filter the requested fields
+// valid request must be in form if ?fields=fieldA,fieldB...
+// of if the fields name that wnt to excluded must be prepend with -
+// ?fields=-fieldA,-fieldB
+export const FieldsFilter = createParamDecorator((_, req: Request): object => {
+  let fields = <string>req.query.fields;
+  let requestedFields = {};
+  if (fields !== undefined) {
+    let arrayOfFields = fields.replace(/^[^a-z\-]+|\s+|[^a-z]+$/gi, "").split(",");
+    // only user non empty fields
+    arrayOfFields = arrayOfFields.filter(field => field !== "");
+    // only allow a-z commas and space in fields value
+    arrayOfFields.forEach(field => {
+      // if the field name is prepended with minus (-) sign
+      // than it means this field is excluded in return data
+      if (field.match(/-[a-z]+/gi)) {
+        let stripedFieldname = field.replace(/-/, "");
+        // in mongodb, to exclude the field(s) we use {<fieldname>:0}
+        requestedFields[stripedFieldname] = 0;
+      } else {
+        // otherwise include it using {<fieldname>:1}
+        requestedFields[field] = 1;
+      }
+    });
+    return requestedFields;
+  }
+  return requestedFields;
+});
+
+// filter must be in form ?filter=<fieldname>:<fieldValue>,[<fieldname>:<fieldvalue>]
+export const ReqFilter = createParamDecorator((_, req: Request) => {
+  let filter = <string>req.query.filter;
+  if (filter !== undefined) {
+    // only allow a-z commas and space in filter value
+    if (filter.match(/[a-z,\:\-\s+0-9]+/gi)) {
+      let filters = filter.split(",");
+      let filterObject = {};
+      filters.forEach(f => {
+        let [field, value] = f.split(":");
+        if (value !== undefined || value !== "") {
+          filterObject[field] = value;
+        }
+      });
+      return filterObject;
+    }
+  }
+  return {};
+});
+
+export const SortBy = createParamDecorator((_, req: Request) => {
+  let { sort } = req.query;
+  if (sort !== undefined) {
+    if (sort.match(/[a-z0-9\-]+/gi)) {
+      let [field, value] = sort.split(":");
+      if (value.match(/-.[0-9]+/g)) {
+        value = parseInt(value);
+      }
+      return { [field]: value };
+    }
+  }
+  return { _id: -1 };
+});
+
+export interface UserInfoPayload {
+  data: {
+    id: string;
+    role: Array<string>;
+    name: string;
+    rt: number;
+    rw: number;
+    iat: number;
+    exp: number;
+    providerID?: string;
+    providerType?: string;
+    apartmentID?: string;
+    apartmentName?: string;
+    path?: string;
+    deviceID?: string;
+  };
+  token: string;
+}
+
+export const UserInfo = createParamDecorator(
+  (_, req: Request): UserInfoPayload => {
+    let user = <UserInfoPayload>req["user"];
+    return user;
+  }
+);

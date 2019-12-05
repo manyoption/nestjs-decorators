@@ -31,7 +31,7 @@ export const FieldsFilter = createParamDecorator((_, req: Request): object => {
 });
 
 // filter must be in form ?filter=<fieldname>:<fieldValue>,[<fieldname>:<fieldvalue>]
-export const ReqFilter = createParamDecorator((_, req: Request) => {
+export const ReqFilter = createParamDecorator((_, req: Request): object => {
   let filter = <string>req.query.filter;
   if (filter !== undefined) {
     // only allow a-z commas and space in filter value
@@ -50,7 +50,7 @@ export const ReqFilter = createParamDecorator((_, req: Request) => {
   return {};
 });
 
-export const SortBy = createParamDecorator((_, req: Request) => {
+export const SortBy = createParamDecorator((_, req: Request): object => {
   let { sort } = req.query;
   if (sort !== undefined) {
     if (sort.match(/[a-z0-9\-]+/gi)) {

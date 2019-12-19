@@ -1,13 +1,16 @@
 {
   "name": "mo-nest-decorator",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.2",
+  "description": "Common decorators for NestJS framework",
+  "repository": {
+    "url": "https://github.com/manyoption/nestjs-decorators"
+  },
   "main": "main.js",
   "scripts": {
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "syamsul muttaqin",
   "license": "ISC",
   "dependencies": {
     "@nestjs/common": "^6.10.5",

@@ -5,13 +5,16 @@ import { Request } from "express";
 // valid request must be in form if ?fields=fieldA,fieldB...
 // of if the fields name that wnt to excluded must be prepend with -
 // ?fields=-fieldA,-fieldB
-export const FieldsFilter = createParamDecorator((_, req: Request): object => {
+export const FieldsFilter = createParamDecorator((returnType, req: Request): {} | string[] => {
   let fields = <string>req.query.fields;
-  let requestedFields = {};
+  let requestedFields = returnType === "array" ? [] : {};
   if (fields !== undefined) {
     let arrayOfFields = fields.replace(/^[^a-z\-]+|\s+|[^a-z]+$/gi, "").split(",");
-    // only user non empty fields
+    // only use non empty fields
     arrayOfFields = arrayOfFields.filter(field => field !== "");
+    if (Array.isArray(requestedFields)) {
+      return arrayOfFields;
+    }
     // only allow a-z commas and space in fields value
     arrayOfFields.forEach(field => {
       // if the field name is prepended with minus (-) sign

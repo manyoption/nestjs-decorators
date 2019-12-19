@@ -1,6 +1,25 @@
 "use strict";
 exports.__esModule = true;
 var common_1 = require("@nestjs/common");
+exports.Pagination = common_1.createParamDecorator(function (defaultPerPage, req) {
+    var _a = req.query, page = _a.page, limit = _a.limit;
+    var skip = 0;
+    if (isNaN(parseInt(limit))) {
+        limit = isNaN(defaultPerPage) ? 10 : defaultPerPage;
+    }
+    else {
+        limit = parseInt(limit);
+    }
+    if (!isNaN(parseInt(page))) {
+        skip = (parseInt(page) - 1) * parseInt(limit);
+    }
+    page = isNaN(parseInt(page)) ? 1 : parseInt(page);
+    return {
+        page: page,
+        limit: limit,
+        skip: skip
+    };
+});
 // Decorator to filter the requested fields
 // valid request must be in form if ?fields=fieldA,fieldB...
 // of if the fields name that wnt to excluded must be prepend with -
@@ -52,8 +71,9 @@ exports.ReqFilter = common_1.createParamDecorator(function (_, req) {
     }
     return {};
 });
-exports.SortBy = common_1.createParamDecorator(function (_, req) {
+exports.SortBy = common_1.createParamDecorator(function (dbType, req) {
     var _a;
+    if (dbType === void 0) { dbType = "nosql"; }
     var sort = req.query.sort;
     if (sort !== undefined) {
         if (sort.match(/[a-z0-9\-]+/gi)) {
@@ -64,7 +84,7 @@ exports.SortBy = common_1.createParamDecorator(function (_, req) {
             return _a = {}, _a[field] = value, _a;
         }
     }
-    return { _id: -1 };
+    return dbType === "nosql" ? { _id: -1 } : { id: 1 };
 });
 exports.UserInfo = common_1.createParamDecorator(function (_, req) {
     var user = req["user"];

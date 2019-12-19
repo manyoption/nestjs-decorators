@@ -86,7 +86,7 @@ export const ReqFilter = createParamDecorator((_, req: Request): object => {
   return {};
 });
 
-export const SortBy = createParamDecorator((_, req: Request): object => {
+export const SortBy = createParamDecorator((dbType = "nosql", req: Request): object => {
   let { sort } = req.query;
   if (sort !== undefined) {
     if (sort.match(/[a-z0-9\-]+/gi)) {
@@ -97,7 +97,7 @@ export const SortBy = createParamDecorator((_, req: Request): object => {
       return { [field]: value };
     }
   }
-  return { _id: -1 };
+  return dbType === "nosql" ? { _id: -1 } : { id: 1 };
 });
 
 export interface UserInfoPayload {

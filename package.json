@@ -1,6 +1,6 @@
 {
   "name": "mo-nest-decorator",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Common decorators for NestJS framework",
   "repository": {
     "url": "https://github.com/manyoption/nestjs-decorators"

@@ -15,6 +15,25 @@ export interface PaginationOption {
   skip: number;
 }
 
+export const Pagination = createParamDecorator((defaultPerPage: number, req: Request) => {
+  let { page, limit } = req.query;
+  let skip = 0;
+  if (isNaN(parseInt(limit))) {
+    limit = isNaN(defaultPerPage) ? 10 : defaultPerPage;
+  } else {
+    limit = parseInt(limit);
+  }
+  if (!isNaN(parseInt(page))) {
+    skip = (parseInt(page) - 1) * parseInt(limit);
+  }
+  page = isNaN(parseInt(page)) ? 1 : parseInt(page);
+  return {
+    page,
+    limit,
+    skip
+  };
+});
+
 // Decorator to filter the requested fields
 // valid request must be in form if ?fields=fieldA,fieldB...
 // of if the fields name that wnt to excluded must be prepend with -

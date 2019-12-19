@@ -5,6 +5,20 @@ export declare function ReqFilter(data: any, req: Request): object;
 export declare function SortBy(data: any, req: Request): object;
 export declare function UserInfo(data: any, req: Request): UserInfoPayload;
 
+export interface Paginated<T> {
+  readonly count: number;
+  readonly pages: number;
+  readonly currentPage: number;
+  readonly limit: number;
+  readonly data: T;
+}
+
+export interface PaginationOption {
+  page: number;
+  limit: number;
+  skip: number;
+}
+
 export interface UserInfoPayload {
   data: {
     id: string;

@@ -91,8 +91,10 @@ export const SortBy = createParamDecorator((dbType = "nosql", req: Request): obj
   if (sort !== undefined) {
     if (sort.match(/[a-z0-9\-]+/gi)) {
       let [field, value] = sort.split(":");
-      if (value.match(/-.[0-9]+/g)) {
+      if (value.match(/\-?1/)) {
         value = parseInt(value);
+      } else {
+        value = (value as string).toUpperCase();
       }
       return { [field]: value };
     }

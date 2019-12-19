@@ -78,8 +78,11 @@ exports.SortBy = common_1.createParamDecorator(function (dbType, req) {
     if (sort !== undefined) {
         if (sort.match(/[a-z0-9\-]+/gi)) {
             var _b = sort.split(":"), field = _b[0], value = _b[1];
-            if (value.match(/-.[0-9]+/g)) {
+            if (value.match(/\-?1/)) {
                 value = parseInt(value);
+            }
+            else {
+                value = value.toUpperCase();
             }
             return _a = {}, _a[field] = value, _a;
         }

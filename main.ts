@@ -1,6 +1,20 @@
 import { createParamDecorator } from "@nestjs/common";
 import { Request } from "express";
 
+export interface Paginated<T> {
+  readonly count: number;
+  readonly pages: number;
+  readonly currentPage: number;
+  readonly limit: number;
+  readonly data: T;
+}
+
+export interface PaginationOption {
+  page: number;
+  limit: number;
+  skip: number;
+}
+
 // Decorator to filter the requested fields
 // valid request must be in form if ?fields=fieldA,fieldB...
 // of if the fields name that wnt to excluded must be prepend with -
